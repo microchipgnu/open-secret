@@ -1,13 +1,22 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function useTextToSpeech() {
-    const [audioElement, setAudioElement] = useState(new Audio());
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
 
-    const toggleAudio = async (text: string, voiceId = 'alloy') => {
+
+    useEffect(() => {
+        setAudioElement(new Audio());
+    }, []);
+
+    const toggleAudio = useCallback(async (text: string, voiceId = 'alloy') => {
+        if (!audioElement) {
+            return;
+        }
+
         // If audio is already playing, stop and reset it
         if (isPlaying) {
             audioElement.pause();
@@ -51,7 +60,8 @@ export function useTextToSpeech() {
         } finally {
             setIsLoading(false); // Set loading state to false when fetch is complete
         }
-    };
+    }, [audioElement, isPlaying]);
+
 
     // Cleanup effect for when the component using this hook unmounts
     useEffect(() => {

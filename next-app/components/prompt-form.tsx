@@ -45,7 +45,7 @@ export function PromptForm({
         if (transcript) {
             setInput(transcript)
         }
-    }, [transcript])
+    }, [transcript, setInput])
 
     return (
         <form
