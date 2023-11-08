@@ -4,6 +4,7 @@ use near_contract_standards::non_fungible_token::metadata::{
     NFT_METADATA_SPEC,
     TokenMetadata,
 };
+use std::convert::TryInto;
 use near_sdk::PublicKey;
 use near_sdk::collections::Vector;
 use near_sdk::serde::{ Deserialize, Serialize };
@@ -50,6 +51,7 @@ pub struct Contract {
     tokens: NonFungibleToken,
     metadata: LazyOption<NFTContractMetadata>,
     private_metadata: LookupMap<TokenId, Vector<EncryptedMetadata>>,
+    tokens_by_public_key: LookupMap<PublicKey, Vector<TokenId>>,
 }
 
 const DATA_IMAGE_SVG_NEAR_ICON: &str =
@@ -63,6 +65,7 @@ enum StorageKey {
     Enumeration,
     Approval,
     PrivateMetadata,
+    TokensByPublicKeyIndex,
 }
 
 #[near_bindgen]
@@ -94,6 +97,7 @@ impl Contract {
             ),
             metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
             private_metadata: LookupMap::new(StorageKey::PrivateMetadata),
+            tokens_by_public_key: LookupMap::new(StorageKey::TokensByPublicKeyIndex),
         }
     }
 
@@ -118,6 +122,12 @@ impl Contract {
             "Only the owner of the token can add metadata"
         );
 
+        let mut token_ids = self.tokens_by_public_key
+            .get(&metadata.public_key)
+            .unwrap_or_else(|| Vector::new(StorageKey::TokensByPublicKeyIndex));
+        token_ids.push(&token_id);
+        self.tokens_by_public_key.insert(&metadata.public_key, &token_ids);
+
         let mut metadata_vector = self.private_metadata
             .get(&token_id)
             .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadata));
@@ -125,31 +135,7 @@ impl Contract {
         self.private_metadata.insert(&token_id, &metadata_vector);
     }
 
-    // pub fn remove_metadata(&mut self, token_id: TokenId, public_key: PublicKey) {
-    //     // Get the Token data to check the owner
-    //     let token = self.tokens.nft_token(token_id.clone()).expect("Token not found");
-
-    //     // Ensure that the sender of the transaction is the owner of the token
-    //     assert_eq!(
-    //         &env::predecessor_account_id(),
-    //         &token.owner_id,
-    //         "Only the owner of the token can remove metadata"
-    //     );
-
-    //     // Retrieve the metadata vector, if it exists
-    //     if let Some(mut metadatas) = self.private_metadata.get(&token_id) {
-    //         // Find and remove all metadata with the given public key
-    //         let initial_len = metadatas.len();
-    //         metadatas.retain(|metadata| metadata.public_key != public_key);
-
-    //         // If any metadata was removed, save the changes
-    //         if metadatas.len() != initial_len {
-    //             self.private_metadata.insert(&token_id, &metadatas);
-    //         }
-    //     }
-    // }
-
-    pub fn remove_all_metadata(&mut self, token_id: TokenId) {
+    pub fn remove_metadata(&mut self, token_id: TokenId, public_key: PublicKey) {
         // Get the Token data to check the owner
         let token = self.tokens.nft_token(token_id.clone()).expect("Token not found");
 
@@ -157,14 +143,86 @@ impl Contract {
         assert_eq!(
             &env::predecessor_account_id(),
             &token.owner_id,
+            "Only the owner of the token can remove metadata"
+        );
+
+        // Retrieve the metadata vector, if it exists
+        if let Some(metadatas) = self.private_metadata.get(&token_id) {
+            let initial_len = metadatas.len(); // `len()` returns `u64` already, no need to cast.
+
+            // Filter out metadata that matches the public key
+            let mut new_metadatas = Vector::new(b"m".to_vec());
+            for index in 0..initial_len {
+                let metadata = metadatas.get(index).unwrap(); // Directly using `u64` index
+                if metadata.public_key != public_key {
+                    new_metadatas.push(&metadata);
+                }
+            }
+
+            // If any metadata was removed (i.e., new vector is smaller), save the changes
+            if (new_metadatas.len() as u64) != initial_len {
+                // Compare both as u64
+                self.private_metadata.insert(&token_id, &new_metadatas);
+            }
+        }
+
+        // Similarly, update the tokens_by_public_key map
+        if let Some(token_ids) = self.tokens_by_public_key.get(&public_key) {
+            let initial_len = token_ids.len() as u64; // Convert usize to u64 if needed
+
+            let mut new_token_ids = Vector::new(b"t".to_vec());
+            for index in 0..initial_len {
+                let id = token_ids.get((index as usize).try_into().unwrap()).unwrap();
+                if id != token_id {
+                    new_token_ids.push(&id);
+                }
+            }
+
+            // If any token ids were removed (i.e., new vector is smaller), save the changes
+            if (new_token_ids.len() as u64) != initial_len {
+                // Compare both as u64
+                if new_token_ids.is_empty() {
+                    self.tokens_by_public_key.remove(&public_key);
+                } else {
+                    self.tokens_by_public_key.insert(&public_key, &new_token_ids);
+                }
+            }
+        }
+    }
+
+    pub fn remove_all_metadata(&mut self, token_id: TokenId) {
+        let token = self.tokens.nft_token(token_id.clone()).expect("Token not found");
+
+        assert_eq!(
+            &env::predecessor_account_id(),
+            &token.owner_id,
             "Only the owner of the token can remove all metadata"
         );
 
-        // Remove all metadata for the token
         let metadata_removed = self.private_metadata.remove(&token_id);
 
-        // If there was no metadata, panic
         assert!(metadata_removed.is_some(), "No metadata found to remove");
+    }
+
+    pub fn get_tokens_by_public_key(
+        &self,
+        public_key: PublicKey,
+        from_index: Option<u64>,
+        limit: Option<u64>
+    ) -> Vec<TokenId> {
+        let tokens_vector = self.tokens_by_public_key.get(&public_key).unwrap_or_else(|| {
+            Vector::new(b"t".to_vec()) // You can use a unique prefix for the new Vector
+        });
+
+        // Determine the starting index
+        let start_index = from_index.unwrap_or(0);
+
+        // Set the limit for how many items we will return at most.
+        // The limit is the minimum of the requested limit and a pre-defined maximum limit.
+        let limit = limit.unwrap_or(50).min(50); // for example, enforce a max limit of 50
+
+        // Collect the token IDs within the specified range
+        (start_index..start_index + limit).filter_map(|index| tokens_vector.get(index)).collect()
     }
 
     // Retrieves a list of encrypted metadata entries for a given token ID

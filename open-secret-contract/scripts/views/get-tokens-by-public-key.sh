@@ -1,3 +1,5 @@
+
+
 #!/bin/bash
 
 # Path to the file containing the contract name
@@ -10,8 +12,7 @@ if [ -f "$CONTRACT_NAME_FILE" ]; then
     echo "Contract Name: $CONTRACT_NAME"
 
     # Now you can use the CONTRACT_NAME variable to run your near view command
-    near view $CONTRACT_NAME get_private_metadata_by_key_paginated '{
-        "token_id": "1",
+    near view $CONTRACT_NAME get_tokens_by_public_key '{
         "public_key": "ed25519:8LXEySyBYewiTTL2jfGTSYcZsDjpRJ4hRm1fS3WJ4MdH",
         "from_index": 0,
         "limit": 10

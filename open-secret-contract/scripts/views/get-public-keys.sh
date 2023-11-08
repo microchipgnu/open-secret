@@ -10,9 +10,8 @@ if [ -f "$CONTRACT_NAME_FILE" ]; then
     echo "Contract Name: $CONTRACT_NAME"
 
     # Now you can use the CONTRACT_NAME variable to run your near view command
-    near view $CONTRACT_NAME get_private_metadata_by_key_paginated '{
+    near view $CONTRACT_NAME get_public_keys '{
         "token_id": "1",
-        "public_key": "ed25519:8LXEySyBYewiTTL2jfGTSYcZsDjpRJ4hRm1fS3WJ4MdH",
         "from_index": 0,
         "limit": 10
     }' --accountId yoooooooooooooooooooo.testnet
