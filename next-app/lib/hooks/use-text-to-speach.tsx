@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-export function useTextToSpeech() {
+export function useTextToSpeach() {
     const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
-
 
     useEffect(() => {
         setAudioElement(new Audio());

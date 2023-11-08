@@ -10,7 +10,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { nanoid } from 'ai'
 import { functionSchemas } from '@/lib/functions/schemas'
-import { useTextToSpeech } from '@/lib/hooks/use-text-to-speech'
+import { useTextToSpeachContext } from '@/lib/providers/text-to-speach-provider'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
     initialMessages?: Message[]
@@ -21,7 +21,7 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 
 export function Chat({ id, initialMessages, className, showLanding = false, avatarUrl }: ChatProps) {
     const voiceId = 'alloy'
-    const { toggleAudio } = useTextToSpeech()
+    const { toggleAudio } = useTextToSpeachContext();
 
     const functionCallHandler: FunctionCallHandler = async (
         chatMessages,

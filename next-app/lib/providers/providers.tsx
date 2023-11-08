@@ -6,6 +6,7 @@ import { ThemeProviderProps } from 'next-themes/dist/types'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { DataProvider } from '@/lib/providers/data-provider'
 import { WalletProvider } from '@/lib/providers/wallet-provider'
+import { TextToSpeachProvider } from './text-to-speach-provider'
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
     return (
@@ -13,7 +14,9 @@ export function Providers({ children, ...props }: ThemeProviderProps) {
             <TooltipProvider>
                 <WalletProvider>
                     <DataProvider>
-                        {children}
+                        <TextToSpeachProvider>
+                            {children}
+                        </TextToSpeachProvider>
                     </DataProvider>
                 </WalletProvider>
             </TooltipProvider>
