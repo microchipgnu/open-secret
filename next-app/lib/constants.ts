@@ -15,7 +15,7 @@ const mintbaseWalletUrl =
 
 const twitterText =
     process.env.NEXT_PUBLIC_TWITTER ||
-    "Instantly%20mint%20your%20AI%20%%20creations%20%at%20%%OpenSecret%20%40Mintbase%20%40NEARProtocol%20%23BOS%20%23NEAR%0aMint%20yours%20here%3A%20https%3A%2F%2Fminsta.mintbase.xyz";
+    "Instantly%20mint%20your%20AI%20%%20creations%20%at%20%%Open%20%Secret%20%40Mintbase%20%40NEARProtocol%20%23BOS%20%23NEAR%0aMint%20yours%20here%3A%20https%3A%2F%2Fminsta.mintbase.xyz";
 
 export const constants = {
     appName,
