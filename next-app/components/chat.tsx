@@ -1,6 +1,6 @@
 'use client'
 
-import { ChatRequest, FunctionCallHandler } from 'ai'
+import { FunctionCallHandler } from 'ai'
 import { useChat, type Message } from 'ai/react'
 import toast from 'react-hot-toast'
 
@@ -8,20 +8,24 @@ import { cn } from '@/lib/utils'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
-import { nanoid } from 'ai'
-import { functionSchemas } from '@/lib/functions/schemas'
+import { ProfileCard } from '@/components/profile-card'
 import { useTextToSpeachContext } from '@/lib/providers/text-to-speach-provider'
+import { useProfile } from '@/lib/hooks/use-profile'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
     initialMessages?: Message[]
     id?: string
-    showLanding?: boolean
     avatarUrl?: string
+    accountId?: string
 }
 
-export function Chat({ id, initialMessages, className, showLanding = false, avatarUrl }: ChatProps) {
+export function Chat({ id, initialMessages, className, accountId }: ChatProps) {
     const voiceId = 'alloy'
     const { toggleAudio } = useTextToSpeachContext();
+
+    const { profileData, isLoading: isLoadingProfile } = useProfile({ accountId: accountId || 'markeljan.near' });
+
+    console.log(profileData, isLoadingProfile)
 
     const functionCallHandler: FunctionCallHandler = async (
         chatMessages,
@@ -79,9 +83,17 @@ export function Chat({ id, initialMessages, className, showLanding = false, avat
     return (
         <>
             <div className={cn('pb-[200px] pt-4 md:pt-10 px-4', className)}>
+                {profileData &&
+                    <div className='flex w-full mx-auto justify-center align-center mb-10'>
+                        <ProfileCard profileData={profileData} />
+                    </div>
+                }
                 <ChatList messages={messages} />
                 <ChatScrollAnchor trackVisibility={isLoading} />
             </div>
+
+
+
             <ChatPanel
                 id={id}
                 isLoading={isLoading}

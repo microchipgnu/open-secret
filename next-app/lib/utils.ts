@@ -16,3 +16,10 @@ export const generateRandomId = (length: number) => {
   return result;
 };
 
+export const toGatewayUrl = (ipfsCid: string) => {
+  return `https://ipfs.near.social/ipfs/${ipfsCid}`
+  // return `https://ipfs.io/ipfs/${ipfsCid}`
+  // return `https:${ipfsCid}.ipfs.nftstorage.link`;
+  // return `https:cloudflare-ipfs.com/ipfs/${ipfsCid}`;
+}
+
