@@ -11,6 +11,12 @@ dependencies:
   '@mintbase-js/react':
     specifier: 0.5.0-beta.2
     version: 0.5.0-beta.2(borsh@0.7.0)(encoding@0.1.13)(graphql@16.8.1)(typescript@5.2.2)
+<<<<<<< Updated upstream
+=======
+  '@mintbase-js/rpc':
+    specifier: 0.5.0-beta.2
+    version: 0.5.0-beta.2(encoding@0.1.13)
+>>>>>>> Stashed changes
   '@mintbase-js/sdk':
     specifier: 0.5.0-beta.2
     version: 0.5.0-beta.2(encoding@0.1.13)
@@ -20,6 +26,9 @@ dependencies:
   '@near-wallet-selector/modal-ui':
     specifier: ^8.7.1
     version: 8.7.1(near-api-js@2.1.4)
+  '@nearfoundation/near-js-encryption-box':
+    specifier: ^0.1.2
+    version: 0.1.2
   '@radix-ui/react-separator':
     specifier: ^1.0.3
     version: 1.0.3(@types/react-dom@18.2.15)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
@@ -47,6 +56,9 @@ dependencies:
   lucide-react:
     specifier: ^0.279.0
     version: 0.279.0(react@18.2.0)
+  near-api-js:
+    specifier: ^2.1.4
+    version: 2.1.4(encoding@0.1.13)
   next:
     specifier: ^14.0.1
     version: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -694,6 +706,16 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@mintbase-js/rpc@0.5.0-beta.2(encoding@0.1.13):
+    resolution: {integrity: sha512-zOAD9gHvopiyI8iGXGEwAGPz7Z30zAW2RArUDXCnBCLZzL+KS5ZbRDp5QZp9ZjrAwTYWoOlL5muOEqGmPAfrKg==}
+    dependencies:
+      '@types/node': 16.18.61
+      bn.js: 5.2.1
+      isomorphic-unfetch: 3.1.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@mintbase-js/sdk@0.4.1-fix-sign-transaction-0872c2d.0(encoding@0.1.13):
     resolution: {integrity: sha512-SRIe75o3Ymc3zQ3Q5Ghu+ibilP0xgvDy9Pn1rFgni8B5V07pwNJSLBSDuPgkd4UbRy0jk+OlyvCCyfAQl1qsHA==}
     dependencies:
@@ -1058,6 +1080,17 @@ packages:
       '@near-wallet-selector/core': 8.7.1(near-api-js@2.1.4)
       bn.js: 5.2.1
       near-api-js: 2.1.4(encoding@0.1.13)
+    dev: false
+
+  /@nearfoundation/near-js-encryption-box@0.1.2:
+    resolution: {integrity: sha512-24EvNYu/7jL/z/tF/9Qv7AjBGSj3STd0p5qEuu/my/M5UKCkcS2++FcgkcL7P4XeOGCZMt1iN1Luj2n0J0YlqA==}
+    engines: {node: '>=16'}
+    dependencies:
+      borsh: 0.7.0
+      ed2curve: 0.3.0
+      random-bytes: 1.0.0
+      tweetnacl: 1.0.3
+      tweetnacl-util: 0.15.1
     dev: false
 
   /@next/env@14.0.1:
@@ -1741,6 +1774,10 @@ packages:
     dependencies:
       '@types/node': 20.9.0
       form-data: 4.0.0
+    dev: false
+
+  /@types/node@16.18.61:
+    resolution: {integrity: sha512-k0N7BqGhJoJzdh6MuQg1V1ragJiXTh8VUBAZTWjJ9cUq23SG0F0xavOwZbhiP4J3y20xd6jxKx+xNUhkMAi76Q==}
     dev: false
 
   /@types/node@18.18.9:
@@ -2983,6 +3020,12 @@ packages:
       inherits: 2.0.4
       readable-stream: 3.6.2
       stream-shift: 1.0.1
+    dev: false
+
+  /ed2curve@0.3.0:
+    resolution: {integrity: sha512-8w2fmmq3hv9rCrcI7g9hms2pMunQr1JINfcjwR9tAyZqhtyaMN991lF/ZfHfr5tzZQ8c7y7aBgZbjfbd0fjFwQ==}
+    dependencies:
+      tweetnacl: 1.0.3
     dev: false
 
   /electron-to-chromium@1.4.578:
@@ -4257,6 +4300,15 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: true
+
+  /isomorphic-unfetch@3.1.0(encoding@0.1.13):
+    resolution: {integrity: sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==}
+    dependencies:
+      node-fetch: 2.7.0(encoding@0.1.13)
+      unfetch: 4.2.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /iterator.prototype@1.1.2:
     resolution: {integrity: sha512-DR33HMMr8EzwuRL8Y9D3u2BMj8+RqSE850jfGu59kS7tbmPLzGkZmVSfyCFSDxuZiEY6Rzt3T2NA/qU+NwVj1w==}
@@ -5647,6 +5699,11 @@ packages:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
     dev: false
 
+  /random-bytes@1.0.0:
+    resolution: {integrity: sha512-iv7LhNVO047HzYR3InF6pUcUsPQiHTM1Qal51DcGSuZFBil1aBBWG5eHPNek7bvILMaYJ/8RU1e8w1AMdHmLQQ==}
+    engines: {node: '>= 0.8'}
+    dev: false
+
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -6533,6 +6590,10 @@ packages:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: false
 
+  /tweetnacl-util@0.15.1:
+    resolution: {integrity: sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==}
+    dev: false
+
   /tweetnacl@1.0.3:
     resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     dev: false
@@ -6616,7 +6677,6 @@ packages:
 
   /unfetch@4.2.0:
     resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
-    dev: true
 
   /unified@10.1.2:
     resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}

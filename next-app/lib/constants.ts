@@ -1,4 +1,5 @@
 const appName: string = process.env.NEXT_PUBLIC_APP_TITLE || "MINTBASE";
+const callbackUrl: string = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const network = process.env.NEXT_PUBLIC_NETWORK || "mainnet";
 const proxyContractAddress =
     process.env.NEXT_PUBLIC_PROXY_MINTER_CONTRACT_ADDRESS ||
@@ -19,6 +20,7 @@ const twitterText =
 
 export const constants = {
     appName,
+    callbackUrl,
     proxyContractAddress,
     tokenContractAddress,
     network,

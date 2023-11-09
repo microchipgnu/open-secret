@@ -248,6 +248,30 @@ impl Contract {
         }
     }
 
+    pub fn get_private_metadata_paginated(
+        &self,
+        token_id: TokenId,
+        from_index: Option<u64>, 
+        limit: Option<u64> // How many items to return
+    ) -> Vec<EncryptedMetadata> {
+        let metadata_vector = self.private_metadata.get(&token_id).unwrap_or_else(|| {
+            Vector::new(b"pm".to_vec()) // Unique prefix for the Vector holding private metadata
+        });
+
+        // Determine the starting index
+        let start_index = from_index.unwrap_or(0);
+
+        // Determine the limit for how many items to return at most
+        let limit = limit.unwrap_or(50).min(50); // Enforce a max limit of 50
+
+        // Collect the metadata entries within the specified range
+        metadata_vector
+            .iter()
+            .skip(start_index as usize)
+            .take(limit as usize)
+            .collect()
+    }
+
     pub fn get_public_keys(
         &self,
         token_id: TokenId,
