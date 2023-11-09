@@ -1,4 +1,4 @@
-interface Profile {
+export type ProfileData = {
     accountId: string;
     name: string;
     description: string;

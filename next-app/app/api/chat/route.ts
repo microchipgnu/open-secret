@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const openai = new OpenAIApi(configuration);
 
   const res = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4-1106-preview",
     stream: true,
     messages,
     functions: functionSchemas,

@@ -1,6 +1,5 @@
 'use client'
 
-import { FunctionCallHandler } from 'ai'
 import { useChat, type Message } from 'ai/react'
 import toast from 'react-hot-toast'
 
@@ -10,62 +9,23 @@ import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { ProfileCard } from '@/components/profile-card'
 import { useTextToSpeachContext } from '@/lib/providers/text-to-speach-provider'
-import { useProfile } from '@/lib/hooks/use-profile'
-import { usePosts } from '@/lib/hooks/use-posts'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
     initialMessages?: Message[]
     id?: string
     avatarUrl?: string
     accountId?: string
+    profileData?: any
 }
 
-export function Chat({ id, initialMessages, className, accountId }: ChatProps) {
+export function Chat({ id, initialMessages, accountId, className, profileData }: ChatProps) {
     const voiceId = 'alloy'
     const { toggleAudio } = useTextToSpeachContext();
 
-    const { profileData, isLoading: isLoadingProfile } = useProfile(accountId || 'markeljan.near');
-    const { posts, isLoading: isLoadingPosts } = usePosts(accountId || 'markeljan.near');
-    console.log("posts", posts)
-
-    const functionCallHandler: FunctionCallHandler = async (
-        chatMessages,
-        functionCall
-    ) => {
-        if (functionCall.name === 'text_to_image') {
-            // const response = await fetch('/api/text-to-image', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ text: functionCall.arguments })
-            // })
-            // if (!response.ok) {
-            //     throw new Error(response.statusText)
-            // }
-            // const { arweaveId, arweaveUrl } = await response.json()
-
-
-            // const functionResponse: ChatRequest = {
-            //     messages: [
-            //         ...chatMessages,
-            //         {
-            //             id: nanoid(),
-            //             name: 'text_to_image',
-            //             role: 'function',
-            //             content: JSON.stringify({ arweaveId, arweaveUrl })
-            //         }
-            //     ],
-            //     functions: functionSchemas
-            // }
-            // return functionResponse
-        }
-    }
 
 
     const { messages, append, reload, stop, isLoading, input, setInput } =
         useChat({
-            experimental_onFunctionCall: functionCallHandler,
             initialMessages,
             id,
             body: {

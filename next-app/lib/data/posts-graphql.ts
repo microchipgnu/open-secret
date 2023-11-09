@@ -4,6 +4,7 @@ export const getPostsQuery = gql`
   query MyQuery($accountId: String!) {
     dataplatform_near_social_feed_posts(
       where: { account_id: { _eq: $accountId } }
+      limit: 10
     ) {
       id
       content

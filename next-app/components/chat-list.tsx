@@ -20,6 +20,9 @@ export function ChatList({ messages }: ChatList) {
                 if (message.role === "function") {
                     return
                 }
+                if (message.role === "system") {
+                    return
+                }
                 if (message.function_call) {
                     return (
                         <div key={index}>

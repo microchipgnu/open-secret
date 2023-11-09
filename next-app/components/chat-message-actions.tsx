@@ -18,7 +18,7 @@ export function ChatMessageActions({
     className,
     ...props
 }: ChatMessageActionsProps) {
-    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 1500 })
     const { isLoading, isPlaying, toggleAudio } = useTextToSpeachContext();
 
     const onCopy = () => {

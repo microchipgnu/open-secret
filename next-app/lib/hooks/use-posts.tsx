@@ -1,9 +1,11 @@
+'use client'
+
 import { useEffect, useState } from 'react';
 import { getPostsQuery } from '@/lib/data/posts-graphql';
-import { useGraphQlQuery } from '../data/use-graphql-query';
+import { useGraphQlQuery } from '@/lib/data/use-graphql-query';
 
 export const usePosts = (accountId: string) => {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState();
 
     const queryObj = {
         queryName: 'q_getPosts',
@@ -14,8 +16,6 @@ export const usePosts = (accountId: string) => {
     };
 
     const { data, isLoading, refetch: refetchPosts } = useGraphQlQuery(queryObj);
-
-    console.log('data', data);
 
     useEffect(() => {
         // Initial fetch or when new data comes in

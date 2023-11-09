@@ -12,9 +12,10 @@ import { toGatewayUrl } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { ProfileData } from "@/lib/types";
 
 type ProfileCardProps = {
-    profileData: Profile,
+    profileData: ProfileData,
 }
 
 export function ProfileCard({ profileData }: ProfileCardProps) {
