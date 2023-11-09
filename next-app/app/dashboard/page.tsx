@@ -327,6 +327,9 @@ export default function Component() {
                   <th scope="col" className="py-3 px-6">
                     Hash256
                   </th>
+                  <th scope="col" className="py-3 px-6">
+                    ZK Proofs
+                  </th>
                   <th scope="col" className="py-3 px-6"></th>
                   <th scope="col" className="py-3 px-6"></th>
                 </tr>
@@ -351,6 +354,10 @@ export default function Component() {
                           </a>
                         </td>
                         <td className="py-4 px-6">{item.metadata.hash256}</td>
+                        <td className="py-4 px-6 flex gap-2 justify-center items-center h-full">
+                          <div className="w-12">Contains textual data</div>
+                          <div className="w-12">Personal information</div>
+                        </td>
                         <td
                           className="py-4 px-6 cursor-pointer"
                           onClick={() => decryptData(item.metadata.uri)}
