@@ -43,6 +43,7 @@ pub struct OpenSecretMetadata {
 pub struct EncryptedMetadata {
     public_key: PublicKey,
     metadata: OpenSecretMetadata,
+    signer_public_key: PublicKey
 }
 
 #[near_bindgen]
