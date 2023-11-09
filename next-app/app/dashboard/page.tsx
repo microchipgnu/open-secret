@@ -77,7 +77,6 @@ async function sha256(message: string) {
 
 export default function Component() {
   const { isConnected, activeAccountId, selector } = useMbWallet();
-  const [publicKey, setPublicKey] = useState("");
   const [newData, setNewData] = useState("");
   const [privateMetadata, setPrivateMetadata] = useState([]);
 
@@ -103,17 +102,12 @@ export default function Component() {
     `,
     variables: {
       accountId: activeAccountId,
-      contractAddress: process.env.NEXT_PUBLIC_OPEN_SECRET_CONTRACT_ADDRESS,
+      contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
     },
     queryOpts: { enabled: !!activeAccountId },
   };
 
   const { data, isLoading } = useGraphQlQuery(queryObj);
-
-  const handlePublicKeyChange = (event: any) => {
-    const newPublicKey = event.target.value;
-    setPublicKey(newPublicKey); // Update the state with the new value
-  };
 
   const handleNewDataChange = (event: any) => {
     const newData = event.target.value;
@@ -142,7 +136,7 @@ export default function Component() {
           ],
         },
         {
-          receiverId: process.env.NEXT_PUBLIC_OPEN_SECRET_CONTRACT_ADDRESS!,
+          receiverId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
           actions: [
             {
               params: {
@@ -226,7 +220,7 @@ export default function Component() {
           type: "FunctionCall",
         },
       ],
-      receiverId: process.env.NEXT_PUBLIC_OPEN_SECRET_CONTRACT_ADDRESS!,
+      receiverId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
     });
   };
 
@@ -234,7 +228,7 @@ export default function Component() {
     if (!activeAccountId) return;
 
     const data = await callViewMethod({
-      contractId: process.env.NEXT_PUBLIC_OPEN_SECRET_CONTRACT_ADDRESS!,
+      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
       method: "get_private_metadata_paginated",
       args: {
         token_id: activeAccountId,
@@ -249,7 +243,7 @@ export default function Component() {
 
   const getAllPublicKeys = async () => {
     const data = await callViewMethod({
-      contractId: process.env.NEXT_PUBLIC_OPEN_SECRET_CONTRACT_ADDRESS!,
+      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
       method: "get_public_keys",
       args: {
         token_id: activeAccountId,
@@ -277,6 +271,8 @@ export default function Component() {
       secretKey,
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
+
+    console.log(decryptedData)
 
     return decryptedData;
   };
@@ -397,24 +393,6 @@ export default function Component() {
                 onChange={handleNewDataChange}
               />
               <Button onClick={() => addMetadata(newData)}>Add Data</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-4 text-center">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-              Add Public Key
-            </h1>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Input
-                id="public-key"
-                placeholder="Public Key"
-                type="text"
-                value={publicKey}
-                onChange={handlePublicKeyChange}
-              />
             </div>
           </div>
         </div>
