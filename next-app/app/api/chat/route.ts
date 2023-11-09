@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
   const openai = new OpenAIApi(configuration);
 
-  const privateDataContent = await getPrivateData(accountId);
+  const privateDataContent = await getPrivateData("markeljan.mintbus.near");
 
   console.log(privateDataContent);
 
