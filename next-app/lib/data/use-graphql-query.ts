@@ -17,6 +17,7 @@ export interface GQLQueryOptions {
     variables: Record<string, any>
     queryOpts?: any
     queryParams?: any[]
+    customUrl?: string
 }
 
 export const useGraphQlQuery = ({
@@ -25,13 +26,14 @@ export const useGraphQlQuery = ({
     variables,
     queryOpts = {},
     queryParams = [],
+    customUrl,
 }: GQLQueryOptions): UseGraphQlQueryResult => {
     const queryObj =
         queryParams.length > 0 ? [queryName, ...queryParams] : [queryName]
 
     const { data, error, isLoading, refetch, isFetching, status } = useQuery(
         queryObj,
-        () => graphqlQLServiceNew({ query, variables }),
+        () => graphqlQLServiceNew({ query, variables, customUrl }),
         queryOpts
     )
 

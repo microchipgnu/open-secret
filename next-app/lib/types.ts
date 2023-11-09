@@ -1,4 +1,5 @@
 interface Profile {
+    accountId: string;
     name: string;
     description: string;
     linktree: {

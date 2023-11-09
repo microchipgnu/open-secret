@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-export function useProfile({ accountId }: { accountId: string }) {
-    const [profileData, setProfileData] = useState(null); // Changed from posts to profileData
+export function useProfile(accountId: string) {
+    const [profileData, setProfileData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -22,7 +22,9 @@ export function useProfile({ accountId }: { accountId: string }) {
                     throw new Error(`HTTP error: ${response.status}`);
                 }
                 const data = await response.json();
-                setProfileData(data[accountId].profile); // Changed from setPosts to setProfileData
+                const formattedData = data[accountId].profile;
+                formattedData["accountId"] = accountId;
+                setProfileData(formattedData);
             } catch (error: any) {
                 setError(error?.message || "Something went wrong");
             } finally {

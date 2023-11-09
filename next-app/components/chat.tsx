@@ -11,6 +11,7 @@ import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { ProfileCard } from '@/components/profile-card'
 import { useTextToSpeachContext } from '@/lib/providers/text-to-speach-provider'
 import { useProfile } from '@/lib/hooks/use-profile'
+import { usePosts } from '@/lib/hooks/use-posts'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
     initialMessages?: Message[]
@@ -23,9 +24,9 @@ export function Chat({ id, initialMessages, className, accountId }: ChatProps) {
     const voiceId = 'alloy'
     const { toggleAudio } = useTextToSpeachContext();
 
-    const { profileData, isLoading: isLoadingProfile } = useProfile({ accountId: accountId || 'markeljan.near' });
-
-    console.log(profileData, isLoadingProfile)
+    const { profileData, isLoading: isLoadingProfile } = useProfile(accountId || 'markeljan.near');
+    const { posts, isLoading: isLoadingPosts } = usePosts(accountId || 'markeljan.near');
+    console.log("posts", posts)
 
     const functionCallHandler: FunctionCallHandler = async (
         chatMessages,
