@@ -61,7 +61,7 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
                 <CardTitle className="text-center">
                     {name}
                 </CardTitle>
-                <CardDescription className="text-center">
+                <CardDescription className="text-center max-h-32 overflow-scroll">
                     {description}
                 </CardDescription>
             </CardContent>
