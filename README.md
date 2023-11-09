@@ -1,7 +1,6 @@
 # Open Secret
 
 
-asd
 
 Open Secret is a marketplace for NFT's with encrypted content.
 

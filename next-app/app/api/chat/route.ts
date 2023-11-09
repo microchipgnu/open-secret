@@ -22,14 +22,8 @@ const getPrivateData = async (accountId: string) => {
     },
   });
 
-  console.log(data);
-
   const decryptData = async (uri: string) => {
     const result = await fetch(uri);
-
-    console.log(uri);
-    console.log(result);
-
     if (!result.ok) {
       throw new Error(result.statusText);
     }
@@ -38,12 +32,11 @@ const getPrivateData = async (accountId: string) => {
 
     const decryptedData = open(
       data,
-      "ed25519:R3NkdW554Y2xNST8cAmYXD5pJBbUtJZex7hk8NTGgAz",
+      //markeljan.mintbus.near
+      "ed25519:G2ZpqyMDZriNVKGCFLbraHdnCsySPP8YhjpB48Y1HUvX",
       process.env.BOT_PRIVATE_KEY!,
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
-
-    console.log(decryptedData);
 
     return decryptedData;
   };
@@ -53,7 +46,6 @@ const getPrivateData = async (accountId: string) => {
     privateData += "\n";
   }
 
-  console.log(privateData);
 
   return privateData;
 };
@@ -70,13 +62,9 @@ export async function POST(req: Request) {
 
   const privateDataContent = await getPrivateData("markeljan.mintbus.near");
 
-  console.log(privateDataContent);
-
-  const privateSystemMessages: Message = {
+  const privateSystemMessages = {
     role: "system",
-    content:
-      JSON.stringify(privateDataContent) || "ERROR: Private data not found",
-    id: "system3",
+    content: JSON.stringify(privateDataContent) || "ERROR: Private data not found",
   };
 
   const res = await openai.createChatCompletion({
