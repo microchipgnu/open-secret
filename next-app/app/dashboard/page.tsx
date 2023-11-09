@@ -75,7 +75,7 @@ async function sha256(message: string) {
   return hashHex;
 }
 
-export default function Component() {
+export default function Dashboard() {
   const { isConnected, activeAccountId, selector } = useMbWallet();
   const [newData, setNewData] = useState("");
   const [privateMetadata, setPrivateMetadata] = useState([]);

@@ -14,11 +14,10 @@ export interface ChatProps extends React.ComponentProps<'div'> {
     initialMessages?: Message[]
     id?: string
     avatarUrl?: string
-    accountId?: string
     profileData?: any
 }
 
-export function Chat({ id, initialMessages, accountId, className, profileData }: ChatProps) {
+export function Chat({ id, initialMessages, className, profileData }: ChatProps) {
     const voiceId = 'alloy'
     const { toggleAudio } = useTextToSpeachContext();
 
