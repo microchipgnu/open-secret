@@ -9,7 +9,11 @@ export type ProfileData = {
         website: string;
     };
     image: {
-        ipfs_cid: string;
+        ipfs_cid?: string;
+        nft?: {
+            contractId: string;
+            tokenId: string;
+        };
     };
     backgroundImage: {
         ipfs_cid: string;

@@ -43,11 +43,9 @@ export function Chat({ id, initialMessages, className, profileData }: ChatProps)
     return (
         <>
             <div className={cn('pb-[200px] pt-4 md:pt-10 px-4', className)}>
-                {profileData &&
-                    <div className='flex w-full mx-auto justify-center align-center mb-10'>
-                        <ProfileCard profileData={profileData} />
-                    </div>
-                }
+                <div className='flex w-full mx-auto justify-center align-center mb-10'>
+                    <ProfileCard profileData={profileData} />
+                </div>
                 <ChatList messages={messages} />
                 <ChatScrollAnchor trackVisibility={isLoading} />
             </div>
