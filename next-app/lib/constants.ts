@@ -1,9 +1,7 @@
 const appName: string = process.env.NEXT_PUBLIC_APP_TITLE || "MINTBASE";
 const callbackUrl: string = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const network = process.env.NEXT_PUBLIC_NETWORK || "mainnet";
-const proxyContractAddress =
-    process.env.NEXT_PUBLIC_PROXY_MINTER_CONTRACT_ADDRESS ||
-    "1.minsta.mintbus.near";
+
 const tokenContractAddress =
     process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS || "open-secret.mintspace2.testnet";
 
@@ -21,7 +19,6 @@ const twitterText =
 export const constants = {
     appName,
     callbackUrl,
-    proxyContractAddress,
     tokenContractAddress,
     network,
     mintbaseBaseUrl,
