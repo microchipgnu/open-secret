@@ -289,8 +289,6 @@ export default function Component() {
 
   const hasToken = data?.token && data?.token.length > 0;
 
-  if (isLoading) return <>Loading...</>;
-
   if (!hasToken) {
     return (
       <section className="w-full py-12 md:py-24 lg:py-32">
