@@ -27,15 +27,22 @@ export default function Home({ params }: { params: { accountId: string } }) {
     );
   }
 
-  const postsMessage: Message = {
+  const profileDataMessage: Message = {
     id: 'system1',
+    role: 'system',
+    content: JSON.stringify(profileData, null, 2)
+  };
+
+  const postsMessage: Message = {
+    id: 'system2',
     role: 'system',
     content: JSON.stringify(posts, null, 2)
   };
 
+
   return (
     <div className="max-w">
-      <Chat initialMessages={[SYSTEM_MESSAGE, postsMessage]} accountId={accountId} profileData={profileData} />
+      <Chat initialMessages={[SYSTEM_MESSAGE, profileDataMessage, postsMessage]} accountId={accountId} profileData={profileData} />
     </div>
   );
 }
