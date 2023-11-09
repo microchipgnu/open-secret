@@ -1,6 +1,8 @@
 # Open Secret
 
 
+
+
 Open Secret is a marketplace for NFT's with encrypted content.
 
 # NEAR Protocol: Handling Private Data & Marketplace Implementation
