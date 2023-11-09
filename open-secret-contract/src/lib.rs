@@ -235,7 +235,7 @@ impl Contract {
         limit: u64 // How many items to return
     ) -> Vec<EncryptedMetadata> {
         let metadata_vector = self.private_metadata.get(&token_id);
-        if let Some(mut metadata_vector) = metadata_vector {
+        if let Some(metadata_vector) = metadata_vector {
             let start_index = from_index.unwrap_or(0);
             metadata_vector
                 .iter()
