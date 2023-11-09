@@ -31,7 +31,8 @@ export function ThemeToggle() {
                     )}
                     <span className="sr-only">Toggle theme</span>
                 </>
-            ) : <IconSpinner className='animate-spin' />}
+            ) : <IconSun className="transition-all" />
+            }
         </Button>
     )
 }

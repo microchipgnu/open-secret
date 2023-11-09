@@ -8,7 +8,7 @@ export function ConnectWallet() {
 
     return (
         <Button
-            className="mr-4"
+            className="mr-4 w-[160px]"
             onClick={() => {
                 if (isConnected) {
                     disconnect()
