@@ -28,7 +28,8 @@ export function Chat({ id, initialMessages, className, profileData }: ChatProps)
             initialMessages,
             id,
             body: {
-                id
+                id,
+                accountId: profileData?.accountId
             },
             onResponse(response) {
                 if (response.status === 401) {
