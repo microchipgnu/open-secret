@@ -22,7 +22,7 @@ const getPrivateData = async (accountId: string) => {
     },
   });
 
-  const decryptData = async (uri: string) => {
+  const decryptData = async (uri: string, signerPublicKey: string) => {
     const result = await fetch(uri);
     if (!result.ok) {
       throw new Error(result.statusText);
@@ -32,8 +32,7 @@ const getPrivateData = async (accountId: string) => {
 
     const decryptedData = open(
       data,
-      //markeljan.mintbus.near
-      "ed25519:G2ZpqyMDZriNVKGCFLbraHdnCsySPP8YhjpB48Y1HUvX",
+      signerPublicKey,
       process.env.BOT_PRIVATE_KEY!,
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
@@ -42,7 +41,7 @@ const getPrivateData = async (accountId: string) => {
   };
 
   for (const item of data) {
-    privateData += await decryptData(item?.metadata?.uri);
+    privateData += await decryptData(item?.metadata?.uri, item?.signer_public_key);
     privateData += "\n";
   }
 

@@ -42,6 +42,7 @@ pub struct OpenSecretMetadata {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, BorshDeserialize, BorshSerialize)]
 pub struct EncryptedMetadata {
     public_key: PublicKey,
+    signer_public_key: PublicKey,
     metadata: OpenSecretMetadata,
     signer_public_key: PublicKey
 }

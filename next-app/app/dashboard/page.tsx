@@ -11,6 +11,8 @@ import { uploadFile } from "@mintbase-js/storage";
 import { useEffect, useState } from "react";
 import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import { constants } from "@/lib/constants";
+import Link from "next/link";
+import { metadata } from "../layout";
 
 async function sha256(message: string) {
   // Encode the string into a Uint8Array, which is like a buffer
@@ -159,6 +161,7 @@ export default function Dashboard() {
               token_id: activeAccountId,
               metadata: {
                 public_key: whichPublicKey,
+                signer_public_key: publicKey_str,
                 metadata: {
                   uri: `https://arweave.net/${result.id}`,
                   hash256: hash,
@@ -290,18 +293,18 @@ export default function Dashboard() {
                     return (
                       <tr
                         key={index}
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                        className="bg-background border-b dark:bg-gray-800 dark:border-gray-700"
                       >
                         <td className="py-4 px-6">{item.public_key}</td>
                         <td className="py-4 px-6">
-                          <a
-                            href={item.uri}
+                          <Link
+                            href={item.metadata.uri}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline cursor-pointer"
                           >
                             {item.metadata.uri}
-                          </a>
+                          </Link>
                         </td>
                         <td className="py-4 px-6">{item.metadata.hash256}</td>
                         <td className="py-4 px-6 flex gap-2 justify-center items-center h-full">
