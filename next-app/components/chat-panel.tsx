@@ -29,6 +29,8 @@ export function ChatPanel({
   setInput,
   messages
 }: ChatPanelProps) {
+  //filter out messages that are system messages
+  const filteredMessages = messages?.filter((message) => message.role !== 'system');
   return (
     <div className="fixed inset-x-0 bottom-0 bg-gradient-to-b from-muted/10 from-10% to-muted/30 to-50%">
       <div className="mb-1">
@@ -46,7 +48,7 @@ export function ChatPanel({
               Stop generating
             </Button>
           ) : (
-            messages?.length > 0 && (
+            filteredMessages?.length > 0 && (
               <Button
                 variant="outline"
                 onClick={() => reload()}

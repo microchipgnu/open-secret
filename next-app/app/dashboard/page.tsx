@@ -207,8 +207,6 @@ export default function Dashboard() {
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
 
-    console.log(decryptedData)
-
     return decryptedData;
   };
 

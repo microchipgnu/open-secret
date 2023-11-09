@@ -18,11 +18,6 @@ export default function Home({ params }: { params: { accountId: string } }) {
   const { profileData, isLoading: isLoadingProfile } = useProfile(accountId);
   const { posts, isLoading: isLoadingPosts } = usePosts(accountId);
 
-
-  console.log('profileData', profileData);
-  console.log('posts', posts);
-
-
   const profileDataMessage: Message = {
     id: 'system1',
     role: 'system',
