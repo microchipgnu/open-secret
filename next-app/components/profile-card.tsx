@@ -16,12 +16,16 @@ import { ProfileData } from "@/lib/types";
 import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import { constants } from "@/lib/constants";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
 
 type ProfileCardProps = {
     profileData: ProfileData,
 }
 
 export function ProfileCard({ profileData }: ProfileCardProps) {
+    const [searchAccountId, setSearchAccountId] = useState('');
+    const router = useRouter();
     const { accountId, name, description, backgroundImage, image } = profileData || {};
 
     const [profileImageUrl, setProfileImageUrl] = useState<string>('');
@@ -36,6 +40,12 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
             },
         });
     };
+
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        router.push(`/${searchAccountId}`);
+    };
+
 
     useEffect(() => {
         if (!profileImageUrl) {
@@ -58,7 +68,6 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
 
     return (
         <Card className="w-[380px] relative">
-
             <CardHeader className="overflow-hidden">
 
                 <div className="relative w-full h-24 min-h-[100px]">
@@ -72,6 +81,15 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
                             />
                             <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center h-12 bg-gradient-to-t from-black to-transparent">
                             </div>
+                            {accountId &&
+                                <div className="absolute right-0 top-0 flex items-end justify-end h-full p-2">
+                                    <Link href={`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`} target="_blank">
+                                        <Button className="w-20" variant="outline" size="sm">
+                                            {`View `}<ExternalLink className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    </Link>
+                                </div>
+                            }
                         </>
                     )}
                 </div>
@@ -85,14 +103,6 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
                         loader={({ src }) => src}
                     />
                 </div>
-
-                <div className="absolute right-0 top-0 flex items-end justify-end h-full p-4">
-                    <Link href={`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`} target="_blank">
-                        <Button className="w-20" variant="outline" size="sm">
-                            {`View `}<ExternalLink className="w-4 h-4 ml-2" />
-                        </Button>
-                    </Link>
-                </div>
             </CardHeader>
 
             <CardContent>
@@ -103,6 +113,23 @@ export function ProfileCard({ profileData }: ProfileCardProps) {
                     {description}
                 </CardDescription>
             </CardContent>
+            <CardFooter>
+                <div className="flex w-full">
+                    <form onSubmit={handleSearch} className="flex justify-between items-center w-full gap-2">
+                        <Input
+                            type="text"
+                            placeholder="Search by accountId..."
+                            value={searchAccountId}
+                            onChange={(e) => setSearchAccountId(e.target.value)}
+                        />
+                        <Button
+                            type="submit"
+                        >
+                            Search
+                        </Button>
+                    </form>
+                </div>
+            </CardFooter>
         </Card>
     );
 };
