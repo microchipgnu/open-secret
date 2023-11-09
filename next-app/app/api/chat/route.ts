@@ -32,7 +32,8 @@ const getPrivateData = async (accountId: string) => {
 
     const decryptedData = open(
       data,
-      "ed25519:R3NkdW554Y2xNST8cAmYXD5pJBbUtJZex7hk8NTGgAz",
+      //markeljan.mintbus.near
+      "ed25519:G2ZpqyMDZriNVKGCFLbraHdnCsySPP8YhjpB48Y1HUvX",
       process.env.BOT_PRIVATE_KEY!,
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
