@@ -1,5 +1,10 @@
 # Open Secret
 
+<img width="946" alt="image" src="https://github.com/microchipgnu/open-secret/assets/12901349/0d5c50d6-0269-49f2-b793-405c66c06ced">
+
+
+[YouTube Demo](https://www.youtube.com/watch?v=VawBqiXaiAg)
+
 Open Secret allows you to chat with NEAR Social accounts. We allow users to mint dynamic NFTs that control that reference on-chain private metadata. By owning an NFT, you are able to attach encrypted pieces of data and then give access to other accounts to decrypt this data.
 
 ## NEAR Protocol: Handling Private Data 
