@@ -22,14 +22,8 @@ const getPrivateData = async (accountId: string) => {
     },
   });
 
-  console.log(data);
-
   const decryptData = async (uri: string) => {
     const result = await fetch(uri);
-
-    console.log(uri);
-    console.log(result);
-
     if (!result.ok) {
       throw new Error(result.statusText);
     }
@@ -43,8 +37,6 @@ const getPrivateData = async (accountId: string) => {
       "86NFZFaUh1A8v8O11oMH3/Xwo4Fmi25g"
     );
 
-    console.log(decryptedData);
-
     return decryptedData;
   };
 
@@ -53,7 +45,6 @@ const getPrivateData = async (accountId: string) => {
     privateData += "\n";
   }
 
-  console.log(privateData);
 
   return privateData;
 };
@@ -70,13 +61,9 @@ export async function POST(req: Request) {
 
   const privateDataContent = await getPrivateData(accountId);
 
-  console.log(privateDataContent);
-
-  const privateSystemMessages: Message = {
+  const privateSystemMessages = {
     role: "system",
-    content:
-      JSON.stringify(privateDataContent) || "ERROR: Private data not found",
-    id: "system3",
+    content: JSON.stringify(privateDataContent) || "ERROR: Private data not found",
   };
 
   const res = await openai.createChatCompletion({
