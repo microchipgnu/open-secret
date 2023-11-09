@@ -23,3 +23,12 @@ export const toGatewayUrl = (ipfsCid: string) => {
   // return `https:cloudflare-ipfs.com/ipfs/${ipfsCid}`;
 }
 
+// if given a string ensure it ends in .near if not add it
+export const toNearAccount = (accountId: string) => {
+  if (accountId.endsWith(".near")) {
+    return accountId
+  } else {
+    return `${accountId}.near`
+  }
+}
+

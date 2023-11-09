@@ -7,58 +7,10 @@ import { useGraphQlQuery } from "@/lib/data/use-graphql-query";
 import { useMbWallet } from "@mintbase-js/react";
 import { gql } from "graphql-request";
 import { utils } from "near-api-js";
-import { uploadBuffer, uploadFile } from "@mintbase-js/storage";
-import { RPC_ENDPOINTS } from "@mintbase-js/sdk";
-import { constants } from "@/lib/constants";
+import { uploadFile } from "@mintbase-js/storage";
 import { useEffect, useState } from "react";
-
-const requestFromNearRpc = async (
-  body: Record<string, any>
-): Promise<Record<string, any> | undefined> => {
-  const fetchUrl = RPC_ENDPOINTS[constants.network as "testnet" | "mainnet"];
-
-  const res = await fetch(fetchUrl, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: { "Content-type": "application/json" },
-  });
-
-  return res.json();
-};
-
-const callViewMethod = async ({
-  contractId,
-  method,
-  args,
-}: {
-  contractId: string;
-  method: string;
-  args?: Record<string, any>;
-}): Promise<any> => {
-  const args_base64 = args
-    ? Buffer.from(JSON.stringify(args), "utf-8").toString("base64")
-    : "";
-
-  const res = await requestFromNearRpc({
-    jsonrpc: "2.0",
-    id: "dontcare",
-    method: "query",
-    params: {
-      request_type: "call_function",
-      finality: "final",
-      account_id: contractId,
-      method_name: method,
-      args_base64,
-    },
-  });
-
-  if (res?.error) {
-    throw res.error;
-  }
-
-  const parsed = JSON.parse(Buffer.from(res?.result?.result).toString());
-  return parsed;
-};
+import { callViewMethod } from "@/lib/data/near-rpc-functions";
+import { constants } from "@/lib/constants";
 
 async function sha256(message: string) {
   // Encode the string into a Uint8Array, which is like a buffer
@@ -102,7 +54,7 @@ export default function Dashboard() {
     `,
     variables: {
       accountId: activeAccountId,
-      contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
+      contractAddress: constants.tokenContractAddress,
     },
     queryOpts: { enabled: !!activeAccountId },
   };
@@ -136,7 +88,7 @@ export default function Dashboard() {
           ],
         },
         {
-          receiverId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
+          receiverId: constants.tokenContractAddress,
           actions: [
             {
               params: {
@@ -220,13 +172,13 @@ export default function Dashboard() {
           type: "FunctionCall",
         },
       ],
-      receiverId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
+      receiverId: constants.tokenContractAddress,
     });
   };
 
   const getAllPublicKeys = async () => {
     const data = await callViewMethod({
-      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
+      contractId: constants.tokenContractAddress,
       method: "get_public_keys",
       args: {
         token_id: activeAccountId,
@@ -272,7 +224,7 @@ export default function Dashboard() {
       if (!activeAccountId) return;
 
       const data = await callViewMethod({
-        contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
+        contractId: constants.tokenContractAddress,
         method: "get_private_metadata_paginated",
         args: {
           token_id: activeAccountId,

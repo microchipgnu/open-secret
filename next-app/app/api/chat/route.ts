@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const res = await openai.createChatCompletion({
     model: "gpt-4-1106-preview",
     stream: true,
+    temperature: 0.7,
     messages,
     functions: functionSchemas,
   });
