@@ -19,7 +19,10 @@ export default function Home({ params }: { params: { accountId: string } }) {
   const { posts, isLoading: isLoadingPosts } = usePosts(accountId);
 
 
-  if (!posts) {
+  console.log('profileData', profileData);
+  console.log('posts', posts);
+  
+  if (!posts || !profileData) {
     return (
       <div className="max-w flex justify-center items-center">
         <IconSpinner className="animate-spin h-16 w-16 text-primary mt-20" />
