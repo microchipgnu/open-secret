@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { ProfileData } from '@/lib/types';
 
 export function useProfile(accountId?: string) {
-    if (!accountId) return ({ profileData: null, posts: null, isLoading: false });
-
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 

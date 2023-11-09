@@ -12,7 +12,7 @@ import { RPC_ENDPOINTS } from "@mintbase-js/sdk";
 import { constants } from "@/lib/constants";
 import { useEffect, useState } from "react";
 
-export const requestFromNearRpc = async (
+const requestFromNearRpc = async (
   body: Record<string, any>
 ): Promise<Record<string, any> | undefined> => {
   const fetchUrl = RPC_ENDPOINTS[constants.network as "testnet" | "mainnet"];
@@ -26,7 +26,7 @@ export const requestFromNearRpc = async (
   return res.json();
 };
 
-export const callViewMethod = async ({
+const callViewMethod = async ({
   contractId,
   method,
   args,
@@ -224,23 +224,6 @@ export default function Component() {
     });
   };
 
-  const fetchPrivateMetadata = async () => {
-    if (!activeAccountId) return;
-
-    const data = await callViewMethod({
-      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
-      method: "get_private_metadata_paginated",
-      args: {
-        token_id: activeAccountId,
-        from_index: 0,
-        limit: 1000,
-      },
-    });
-
-    setPrivateMetadata(data);
-    return data;
-  };
-
   const getAllPublicKeys = async () => {
     const data = await callViewMethod({
       contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
@@ -284,6 +267,24 @@ export default function Component() {
   };
 
   useEffect(() => {
+
+    const fetchPrivateMetadata = async () => {
+      if (!activeAccountId) return;
+
+      const data = await callViewMethod({
+        contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS!,
+        method: "get_private_metadata_paginated",
+        args: {
+          token_id: activeAccountId,
+          from_index: 0,
+          limit: 1000,
+        },
+      });
+
+      setPrivateMetadata(data);
+      return data;
+    };
+
     fetchPrivateMetadata();
   }, [isConnected, activeAccountId]);
 
