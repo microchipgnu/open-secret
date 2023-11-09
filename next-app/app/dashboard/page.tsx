@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import { constants } from "@/lib/constants";
 import Link from "next/link";
-import { metadata } from "../layout";
 
 async function sha256(message: string) {
   // Encode the string into a Uint8Array, which is like a buffer
@@ -313,7 +312,10 @@ export default function Dashboard() {
                         </td>
                         <td
                           className="py-4 px-6 cursor-pointer"
-                          onClick={() => decryptData(item.metadata.uri)}
+                          onClick={async () => {
+                            const decryptedData = await decryptData(item.metadata.uri)
+                            alert(decryptedData)
+                          }}
                         >
                           Decrypt
                         </td>

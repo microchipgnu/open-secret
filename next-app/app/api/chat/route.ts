@@ -1,9 +1,9 @@
-import { Configuration, OpenAIApi } from "openai-edge";
-import { Message, OpenAIStream, StreamingTextResponse } from "ai";
-import { functionSchemas } from "@/lib/functions/schemas";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai-edge";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import { constants } from "@/lib/constants";
-import { create, open } from "@nearfoundation/near-js-encryption-box";
+import { open } from "@nearfoundation/near-js-encryption-box";
+
 
 export const maxDuration = 40;
 
@@ -59,22 +59,23 @@ export async function POST(req: Request) {
 
   const openai = new OpenAIApi(configuration);
 
-  const privateDataContent = await getPrivateData("markeljan.mintbus.near");
+  const openSecretDataContent = await getPrivateData(accountId);
 
-  const privateSystemMessages = {
+  const openSecretSystemMessage: ChatCompletionRequestMessage = {
     role: "system",
-    content: JSON.stringify(privateDataContent) || "ERROR: Private data not found",
+    content: `Here is the OpenSecret data for ${accountId}: ${openSecretDataContent}`,
   };
+
+  const messagesWithOpenSecretData = [...messages, openSecretSystemMessage];
 
   const res = await openai.createChatCompletion({
     model: "gpt-4-1106-preview",
     stream: true,
     temperature: 0.7,
-    messages: [...messages, privateSystemMessages],
-    functions: functionSchemas,
+    messages: messagesWithOpenSecretData,
   });
 
-  const stream = OpenAIStream(res);
+  const stream = OpenAIStream(res)
 
   return new StreamingTextResponse(stream);
 }

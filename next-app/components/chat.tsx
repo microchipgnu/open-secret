@@ -21,8 +21,6 @@ export function Chat({ id, initialMessages, className, profileData }: ChatProps)
     const voiceId = 'alloy'
     const { toggleAudio } = useTextToSpeachContext();
 
-
-
     const { messages, append, reload, stop, isLoading, input, setInput } =
         useChat({
             initialMessages,
