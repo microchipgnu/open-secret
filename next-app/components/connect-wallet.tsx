@@ -7,17 +7,32 @@ export function ConnectWallet() {
     const { connect, disconnect, isConnected } = useMbWallet()
 
     return (
-        <Button
-            className="mr-4 w-[160px]"
-            onClick={() => {
-                if (isConnected) {
-                    disconnect()
-                } else {
-                    connect()
-                }
-            }}
-        >
-            {isConnected ? "Disconnect" : "Connect Wallet"}
-        </Button>
+        <>
+            <Button
+                className="mr-4 w-[100px] hidden md:flex"
+                onClick={() => {
+                    if (isConnected) {
+                        disconnect()
+                    } else {
+                        connect()
+                    }
+                }}
+            >
+                {isConnected ? "Disconnect" : "Connect"}
+            </Button>
+            <Button
+                size='sm'
+                className="mr-4 w-[100px] md:hidden"
+                onClick={() => {
+                    if (isConnected) {
+                        disconnect()
+                    } else {
+                        connect()
+                    }
+                }}
+            >
+                {isConnected ? "Disconnect" : "Connect"}
+            </Button>
+        </>
     )
 };
