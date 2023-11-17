@@ -44,6 +44,8 @@ pub struct EncryptedMetadata {
     public_key: PublicKey,
     signer_public_key: PublicKey,
     metadata: OpenSecretMetadata,
+    nonce: String,
+    hash256: String,
 }
 
 #[near_bindgen]
@@ -53,6 +55,7 @@ pub struct Contract {
     metadata: LazyOption<NFTContractMetadata>,
     private_metadata: LookupMap<TokenId, Vector<EncryptedMetadata>>,
     tokens_by_public_key: LookupMap<PublicKey, Vector<TokenId>>,
+    used_nonce_hash_pairs: LookupMap<String, bool>,
 }
 
 const DATA_IMAGE_SVG_NEAR_ICON: &str =
@@ -67,6 +70,7 @@ enum StorageKey {
     Approval,
     PrivateMetadata,
     TokensByPublicKeyIndex,
+    UsedNonceHashPairs,
 }
 
 #[near_bindgen]
@@ -99,6 +103,7 @@ impl Contract {
             metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
             private_metadata: LookupMap::new(StorageKey::PrivateMetadata),
             tokens_by_public_key: LookupMap::new(StorageKey::TokensByPublicKeyIndex),
+            used_nonce_hash_pairs: LookupMap::new(StorageKey::UsedNonceHashPairs),
         }
     }
 
@@ -115,6 +120,13 @@ impl Contract {
     pub fn add_metadata(&mut self, token_id: TokenId, metadata: EncryptedMetadata) {
         // Get the Token data which includes the owner's account ID
         let token = self.tokens.nft_token(token_id.clone()).expect("Token not found");
+
+        let nonce_hash_key = format!("{}-{}", metadata.nonce, metadata.hash256);
+
+        assert!(
+            !self.used_nonce_hash_pairs.contains_key(&nonce_hash_key),
+            "Nonce and hash pair already used"
+        );
 
         // Ensure that the sender of the transaction is the owner of the token
         assert_eq!(
@@ -133,7 +145,9 @@ impl Contract {
             .get(&token_id)
             .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadata));
         metadata_vector.push(&metadata);
+
         self.private_metadata.insert(&token_id, &metadata_vector);
+        self.used_nonce_hash_pairs.insert(&nonce_hash_key, &true);
     }
 
     pub fn remove_metadata(&mut self, token_id: TokenId, public_key: PublicKey) {
@@ -215,7 +229,6 @@ impl Contract {
             Vector::new(b"t".to_vec()) // You can use a unique prefix for the new Vector
         });
 
-        // Determine the starting index
         let start_index = from_index.unwrap_or(0);
 
         // Set the limit for how many items we will return at most.
@@ -252,7 +265,7 @@ impl Contract {
     pub fn get_private_metadata_paginated(
         &self,
         token_id: TokenId,
-        from_index: Option<u64>, 
+        from_index: Option<u64>,
         limit: Option<u64> // How many items to return
     ) -> Vec<EncryptedMetadata> {
         let metadata_vector = self.private_metadata.get(&token_id).unwrap_or_else(|| {
