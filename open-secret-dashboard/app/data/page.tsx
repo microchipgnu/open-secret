@@ -1,11 +1,20 @@
 "use client";
 import NotConnected from "@/components/not-connected";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { constants } from "@/lib/constants";
 import { useGraphQlQuery } from "@/lib/data/use-graphql-query";
 import useOpenSecret from "@/lib/hooks/use-open-secret";
 import { useMbWallet } from "@mintbase-js/react";
 import { gql } from "graphql-request";
+import { Badge } from "@/components/ui/badge";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 
@@ -60,38 +69,29 @@ const NFTManagement = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {data?.token.map(({ id }: { id: string }) => (
-          <div
-            key={id}
-            className="border border-2 rounded overflow-hidden shadow-lg"
-          >
-            <div className="px-6 py-4 flex flex-col">
-              <div className="font-bold mb-2">{id}</div>
-              <Link
-                href={`https://${
-                  constants.network === "testnet" ? "testnet." : ""
-                }mintbase.xyz/contract/${
-                  constants.tokenContractAddress
-                }/token/${id}`}
-                target="_blank"
-              >
-                View on Mintbase
-              </Link>
-              <Link
-                href={`data/${id}`}
-              >
-                Manage
-              </Link>
-              
-              {/* <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded">
-                Edit
-              </button>
-              <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded ml-2">
-                Sell
-              </button>
-              <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded ml-2">
-                Burn
-              </button> */}
-            </div>
+          <div key={id}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="truncate">{id}</CardTitle>
+                <CardDescription>
+                  ...
+                </CardDescription>
+              </CardHeader>
+              <CardContent>...</CardContent>
+              <CardFooter className="flex justify-between">
+                <Link
+                  href={`https://${
+                    constants.network === "testnet" ? "testnet." : ""
+                  }mintbase.xyz/contract/${
+                    constants.tokenContractAddress
+                  }/token/${id}`}
+                  target="_blank"
+                >
+                  Explore
+                </Link>
+                <Link href={`data/${id}`}>Manage</Link>
+              </CardFooter>
+            </Card>
           </div>
         ))}
       </div>

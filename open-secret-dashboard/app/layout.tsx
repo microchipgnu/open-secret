@@ -83,10 +83,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <Dashboard>{children}</Dashboard>
               <div className="bottom-0 right-0 absolute">
                 <div className="p-2 bg-muted/50 bg-black rounded text-white">
+                  <p className="text-xs">Network: {constants.network}</p>
                   <p className="text-xs">
                     Contract: {constants.tokenContractAddress}
                   </p>
-                  <p className="text-xs">Network: {constants.network}</p>
                 </div>
               </div>
             </main>

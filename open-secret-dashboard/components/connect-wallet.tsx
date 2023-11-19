@@ -9,7 +9,7 @@ export function ConnectWallet() {
   return (
     <>
       <Button
-        className="mr-4 w-[100px] hidden md:flex"
+        className="w-[100px] hidden md:flex"
         onClick={() => {
           if (isConnected) {
             disconnect();

@@ -16,7 +16,7 @@ const DecryptionTools = () => {
     data: string;
   } | null>(null);
 
-  const { account, generateNewKeyPair, decryptData } = useOpenSecret({
+  const { decryptData } = useOpenSecret({
     contractId: constants.tokenContractAddress,
   });
 
@@ -91,7 +91,7 @@ const EncryptionTools = () => {
     sha256: string;
   } | null>(null);
 
-  const { account, generateNewKeyPair, encryptData } = useOpenSecret({
+  const { account, encryptData } = useOpenSecret({
     contractId: constants.tokenContractAddress,
   });
 

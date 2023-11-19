@@ -1,9 +1,7 @@
 "use client";
 
+import { PrivateDataTable } from "@/components/private-data-table";
 import { Button } from "@/components/ui/button";
-import { IconCheck } from "@/components/ui/icons";
-import { Input } from "@/components/ui/input";
-import { Tooltip } from "@/components/ui/tooltip";
 import { constants } from "@/lib/constants";
 import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import useOpenSecret from "@/lib/hooks/use-open-secret";
@@ -137,17 +135,15 @@ const TokenComponent = ({ tokenId }: { tokenId: string }) => {
 const TokenPage = ({ params }: { params: { tokenId: string } }) => {
   return (
     <>
-      <h1 className="text-xl font-semibold text-white mb-6">
-        Data Feed Management{" "}
-        <span className="text-gray-400">{params.tokenId}</span>
-      </h1>
-      <div className="text-white mb-6">
-        <Link href={`/data/${params.tokenId}/add`}>
-          <Button>Insert data</Button>
-        </Link>
+      <div className="flex gap-2 items-center mb-6">
+        <h1 className="text-xl font-semibold text-white">
+          Data Feed Management{" "}
+          <span className="text-gray-400">{params.tokenId}</span>
+        </h1>
       </div>
 
-      <TokenComponent tokenId={params.tokenId} />
+      {/* <TokenComponent tokenId={params.tokenId} /> */}
+      <PrivateDataTable tokenId={params.tokenId} />
     </>
   );
 };

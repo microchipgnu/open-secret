@@ -32,3 +32,12 @@ The following process allows for the secure minting and transferring of private 
    - The **Minter** (M) encrypts the data using their keypair (KP1) and includes a reference to this encrypted data (ED1) within the NFT, possibly pointing to an Arweave storage location.
    - When giving access to specific private data bits, they owner needs to decrypt and encrypt again with the viewer's public key.
    - Optionally, the minter may include Zero-Knowledge proofs (e.g., ZK-SNARKs) to validate certain claims about the data, like confirming it matches an Arweave hash pattern through regex verification or that the content was not changed (sha-256).
+
+
+## To Do
+
+- [] Indexer (subgraph?)
+- [] Dashboard 
+- [] Marketplace
+- Use-cases
+   - [] Chat

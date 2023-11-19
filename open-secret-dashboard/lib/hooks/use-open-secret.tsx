@@ -1,17 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { create, open } from "@nearfoundation/near-js-encryption-box";
-import { Input } from "@/components/ui/input";
-import { useGraphQlQuery } from "@/lib/data/use-graphql-query";
-import { useMbWallet } from "@mintbase-js/react";
-import { gql } from "graphql-request";
-import { utils } from "near-api-js";
-import { uploadFile } from "@mintbase-js/storage";
-import { useCallback, useEffect, useState } from "react";
-import { callViewMethod } from "@/lib/data/near-rpc-functions";
 import { constants } from "@/lib/constants";
-import Link from "next/link";
 import { sha256 } from "@/lib/data/hash";
+import { callViewMethod } from "@/lib/data/near-rpc-functions";
+import { useMbWallet } from "@mintbase-js/react";
+import { uploadFile } from "@mintbase-js/storage";
+import { create, open } from "@nearfoundation/near-js-encryption-box";
+import { utils } from "near-api-js";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
+import * as nearAPI from "near-api-js";
+import {
+  createKey,
+  getKeys,
+  isPassKeyAvailable,
+} from "@near-js/biometric-ed25519";
+import { nanoid } from "nanoid";
 
 const useOpenSecret = ({ contractId }: { contractId: string }) => {
   const { isConnected, activeAccountId, selector } = useMbWallet();
@@ -26,6 +28,12 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     secretKey: string;
     accountId: string;
   }>("opensecret-keypair", null);
+  const [keyPairPasskey, setKeyPairPasskey] = useLocalStorage<null | Record<
+    string,
+    {
+      publicKey: string;
+    }
+  >>("opensecret-keypair-passkey", null);
 
   const fetchPrivateMetadata = useCallback(async () => {
     if (!activeAccountId) return;
@@ -47,6 +55,44 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
   useEffect(() => {
     setConnectedContractId(contractId);
   }, [contractId]);
+
+  const getCurrentPublicKey = async () => {
+    if (!keypair) return;
+    if (!keyPairPasskey) return;
+    if (!activeAccountId) return;
+
+    const publicKey = (await isPassKeyAvailable())
+      ? keyPairPasskey[activeAccountId].publicKey
+      : keypair?.publicKey;
+
+    setConnectedPublicKey(publicKey);
+    return publicKey;
+  };
+
+  const getCurrentKeyPair = async () => {
+    const hasPasskeys = await isPassKeyAvailable();
+
+    if (!hasPasskeys) {
+      if (!keypair) {
+        const newKp = generateLocalKeypair();
+        if (!newKp) return;
+
+        const { secretKey } = newKp;
+
+        const kp = nearAPI.KeyPair.fromString(secretKey);
+        return kp;
+      }
+    }
+
+    const kp = await getKeyPairPasskey();
+    if (!kp) return;
+
+    return kp;
+  };
+
+  useEffect(() => {
+    getCurrentPublicKey();
+  }, [keyPairPasskey, keypair, activeAccountId]);
 
   const mintToken = async (tokenId: string) => {
     const wallet = await selector.wallet();
@@ -77,6 +123,10 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     });
   };
 
+  const clearPasskeyLocalstorage = () => {
+    setKeyPairPasskey(null);
+  };
+
   const generateLocalKeypair = () => {
     if (!activeAccountId) return;
 
@@ -93,6 +143,41 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     return newKeypair;
   };
 
+  const generatePasskeyKeypair = async () => {
+    if (!activeAccountId) return;
+
+    const keypair = await createKey(`${activeAccountId}`);
+
+    const newKeypair = {
+      publicKey: keypair.getPublicKey().toString(),
+      accountId: activeAccountId,
+    };
+
+    setKeyPairPasskey({
+      ...keyPairPasskey,
+      [activeAccountId]: newKeypair,
+    });
+  };
+
+  const getKeyPairPasskey = async () => {
+    if (!activeAccountId) return;
+
+    let keys = await getKeys(activeAccountId);
+
+    let correctKey = null;
+
+    keys.forEach((_key) => {
+      if (
+        _key.getPublicKey()?.toString() ===
+        keyPairPasskey?.[activeAccountId]?.publicKey
+      ) {
+        correctKey = _key as nearAPI.utils.KeyPairEd25519;
+      }
+    });
+
+    return correctKey as nearAPI.utils.KeyPair | null;
+  };
+
   const addMetadata = async ({
     data,
     otherPublicKey,
@@ -102,14 +187,16 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     otherPublicKey?: string;
     tokenId?: string;
   }) => {
-    if (!keypair) return;
     if (!activeAccountId) return;
 
-    const { publicKey, secretKey } = keypair;
+    const keypair = await getCurrentKeyPair();
 
-    const whichPublicKey = otherPublicKey ? otherPublicKey : publicKey;
+    if (connectedPublicKey !== keypair?.getPublicKey().toString()) return;
 
-    const { secret, nonce } = create(data, whichPublicKey, secretKey);
+    const whichPublicKey = otherPublicKey ? otherPublicKey : connectedPublicKey;
+
+    // @ts-ignore | TODO: find other ways to use the secret key
+    const { secret, nonce } = create(data, whichPublicKey, keypair?.secretKey);
 
     const blob: Blob = new Blob([secret], { type: "text/plain" });
     const file = new File([blob], "data.txt", {
@@ -130,7 +217,7 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
               token_id: tokenId ? tokenId : activeAccountId,
               metadata: {
                 public_key: whichPublicKey,
-                signer_public_key: publicKey,
+                signer_public_key: connectedPublicKey,
                 nonce: nonce,
                 hash256: hash,
                 metadata: {
@@ -165,9 +252,7 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
   };
 
   const decryptDataByUri = async (uri: string, nonce: string) => {
-    if (!keypair) return;
-
-    const { publicKey, secretKey } = keypair;
+    const keypair = await getCurrentKeyPair();
 
     const result = await fetch(uri);
 
@@ -177,8 +262,9 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
 
     const decryptedData = open(
       await result.text(),
-      publicKey,
-      secretKey,
+      connectedPublicKey,
+      // @ts-ignore TODO: find other ways to use the secret key
+      keypair?.secretKey,
       nonce
     );
 
@@ -186,11 +272,15 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
   };
 
   const decryptData = async (data: string, nonce: string) => {
-    if (!keypair) return;
+    const keypair = await getCurrentKeyPair();
 
-    const { publicKey, secretKey } = keypair;
-
-    const decryptedData = open(data, publicKey, secretKey, nonce);
+    const decryptedData = open(
+      data,
+      connectedPublicKey,
+      // @ts-ignore
+      keypair?.secretKey,
+      nonce
+    );
 
     if (!decryptedData) {
       throw new Error("Failed to decrypt data");
@@ -200,11 +290,14 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
   };
 
   const encryptData = async (data: string) => {
-    if (!keypair) return;
+    const keypair = await getCurrentKeyPair();
 
-    const { publicKey, secretKey } = keypair;
-
-    const { secret, nonce } = create(data, publicKey, secretKey);
+    const { secret, nonce } = create(
+      data,
+      connectedPublicKey,
+      // @ts-ignore TODO: find other ways to use the secret key
+      keypair?.secretKey
+    );
 
     const hash = await sha256(data);
 
@@ -225,15 +318,27 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
   };
 
   const generateNewKeyPair = async () => {
-    const keypair = generateLocalKeypair();
+    const hasPasskeys = await isPassKeyAvailable();
 
-    if (!keypair) return;
+    if (!hasPasskeys) {
+      const newKp = generateLocalKeypair();
+      if (!newKp) return;
 
-    return keypair.publicKey;
+      const { secretKey } = newKp;
+
+      const kp = nearAPI.KeyPair.fromString(secretKey);
+      return kp;
+    }
+
+    const kp = await generatePasskeyKeypair();
+    return kp;
   };
 
   return {
+    clearPasskeyLocalstorage,
     generateNewKeyPair,
+    generatePasskeyKeypair,
+    getKeyPairPasskey,
     giveAccess,
     getAllPublicKeysByTokenId,
     mintToken,
@@ -247,7 +352,7 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     decryptDataByUri,
     account: {
       accountId: activeAccountId,
-      publicKey: keypair?.publicKey,
+      publicKey: connectedPublicKey,
     },
   };
 };
