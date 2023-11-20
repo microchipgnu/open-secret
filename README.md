@@ -41,3 +41,5 @@ The following process allows for the secure minting and transferring of private 
 - [] Marketplace
 - Use-cases
    - [] Chat
+
+   
