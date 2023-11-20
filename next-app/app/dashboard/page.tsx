@@ -305,7 +305,7 @@ export default function Dashboard() {
                             {item.metadata.uri}
                           </Link>
                         </td>
-                        <td className="py-4 px-6">{item.metadata.hash256}</td>
+                        <td className="py-4 px-6">{item.metadata.sha256}</td>
                         <td className="py-4 px-6 flex gap-2 justify-center items-center h-full">
                           <div className="w-12">Contains textual data</div>
                           <div className="w-12">Personal information</div>

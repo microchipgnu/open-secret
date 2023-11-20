@@ -219,10 +219,10 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
                 public_key: whichPublicKey,
                 signer_public_key: connectedPublicKey,
                 nonce: nonce,
-                hash256: hash,
+                sha256: hash,
                 metadata: {
                   uri: `https://arweave.net/${result.id}`,
-                  hash256: hash,
+                  sha256: hash,
                 },
               },
             },

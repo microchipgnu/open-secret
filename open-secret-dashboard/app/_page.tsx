@@ -130,10 +130,10 @@ export default function Dashboard() {
                 public_key: whichPublicKey,
                 signer_public_key: publicKey_str,
                 nonce: nonce,
-                hash256: hash,
+                sha256: hash,
                 metadata: {
                   uri: `https://arweave.net/${result.id}`,
-                  hash256: hash,
+                  sha256: hash,
                 },
               },
             },
@@ -292,7 +292,7 @@ export default function Dashboard() {
                     URI
                   </th>
                   <th scope="col" className="py-3 px-6">
-                    Hash256
+                    SHA-256
                   </th>
                   <th scope="col" className="py-3 px-6">
                     ZK Proofs
@@ -367,7 +367,7 @@ export default function Dashboard() {
                             {item.metadata.uri}
                           </Link>
                         </td>
-                        <td className="py-4 px-6">{item.metadata.hash256}</td>
+                        <td className="py-4 px-6">{item.metadata.sha256}</td>
                         <td className="py-4 px-6">
                           <div className="flex gap-2 items-center">
                             <div className="w-24 h-full">

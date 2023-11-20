@@ -36,7 +36,7 @@ use near_sdk::{
 )]
 pub struct OpenSecretMetadata {
     uri: String,
-    hash256: String,
+    sha256: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, BorshDeserialize, BorshSerialize)]
@@ -45,7 +45,7 @@ pub struct EncryptedMetadata {
     signer_public_key: PublicKey,
     metadata: OpenSecretMetadata,
     nonce: String,
-    hash256: String,
+    sha256: String,
 }
 
 #[near_bindgen]
@@ -71,6 +71,7 @@ enum StorageKey {
     PrivateMetadata,
     TokensByPublicKeyIndex,
     UsedNonceHashPairs,
+    PrivateMetadataByTokenId(TokenId),
 }
 
 #[near_bindgen]
@@ -121,7 +122,7 @@ impl Contract {
         // Get the Token data which includes the owner's account ID
         let token = self.tokens.nft_token(token_id.clone()).expect("Token not found");
 
-        let nonce_hash_key = format!("{}-{}", metadata.nonce, metadata.hash256);
+        let nonce_hash_key = format!("{}-{}", metadata.nonce, metadata.sha256);
 
         assert!(
             !self.used_nonce_hash_pairs.contains_key(&nonce_hash_key),
@@ -138,12 +139,13 @@ impl Contract {
         let mut token_ids = self.tokens_by_public_key
             .get(&metadata.public_key)
             .unwrap_or_else(|| Vector::new(StorageKey::TokensByPublicKeyIndex));
+
         token_ids.push(&token_id);
         self.tokens_by_public_key.insert(&metadata.public_key, &token_ids);
 
         let mut metadata_vector = self.private_metadata
             .get(&token_id)
-            .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadata));
+            .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadataByTokenId(token_id.clone())));
         metadata_vector.push(&metadata);
 
         self.private_metadata.insert(&token_id, &metadata_vector);
@@ -268,9 +270,11 @@ impl Contract {
         from_index: Option<u64>,
         limit: Option<u64> // How many items to return
     ) -> Vec<EncryptedMetadata> {
-        let metadata_vector = self.private_metadata.get(&token_id).unwrap_or_else(|| {
-            Vector::new(b"pm".to_vec()) // Unique prefix for the Vector holding private metadata
-        });
+        let metadata_vector = self.private_metadata
+            .get(&token_id)
+            .unwrap_or_else(|| {
+                Vector::new(StorageKey::PrivateMetadataByTokenId(token_id.clone()))
+            });
 
         // Determine the starting index
         let start_index = from_index.unwrap_or(0);
@@ -295,7 +299,7 @@ impl Contract {
         // Assume `metadatas` is a `Vector<EncryptedMetadata>`
         let metadatas: Vector<EncryptedMetadata> = self.private_metadata
             .get(&token_id)
-            .unwrap_or_else(|| Vector::new(b"m"));
+            .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadataByTokenId(token_id.clone())));
 
         // Calculate end index respecting the length of the vector and the given limit
         let end_index = std::cmp::min(from_index + limit, metadatas.len());
@@ -310,7 +314,7 @@ impl Contract {
         // Assume `metadatas` is a `Vector<EncryptedMetadata>`
         let metadatas: Vector<EncryptedMetadata> = self.private_metadata
             .get(&token_id)
-            .unwrap_or_else(|| Vector::new(b"m"));
+            .unwrap_or_else(|| Vector::new(StorageKey::PrivateMetadataByTokenId(token_id.clone())));
 
         // Iterate over the vector and check if any metadata matches the public key
         (0..metadatas.len()).any(|index| {

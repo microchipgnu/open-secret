@@ -50,7 +50,7 @@ const TokenComponent = ({ tokenId }: { tokenId: string }) => {
               URI
             </th>
             <th scope="col" className="py-3 px-6">
-              Hash256
+              SHA-256
             </th>
             <th scope="col" className="py-3 px-6">
               ZK Proofs
@@ -116,7 +116,7 @@ const TokenComponent = ({ tokenId }: { tokenId: string }) => {
                       {item.metadata.uri}
                     </Link>
                   </td>
-                  <td className="py-4 px-6">{item.metadata.hash256}</td>
+                  <td className="py-4 px-6">{item.metadata.sha256}</td>
                   <td className="py-4 px-6">
                     <div className="flex gap-2 items-center">
                       <div className="w-24 h-full">Contains textual data</div>

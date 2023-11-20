@@ -50,7 +50,7 @@ export type PrivateData = {
   public_key: string;
   metadata: {
     uri: string;
-    hash256: string;
+    sha256: string;
   };
   nonce: string;
 };
@@ -278,7 +278,7 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
               <DropdownMenuItem
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    privateMetadata.metadata.hash256
+                    privateMetadata.metadata.sha256
                   )
                 }
               >

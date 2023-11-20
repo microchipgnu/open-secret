@@ -17,6 +17,8 @@ import { gql } from "graphql-request";
 import { Badge } from "@/components/ui/badge";
 import { nanoid } from "nanoid";
 import Link from "next/link";
+import React from "react";
+import { callViewMethod } from "@/lib/data/near-rpc-functions";
 
 const QUERY_OWNS_TOKEN = gql`
   query GetOwnsToken($accountId: String!, $contractAddress: String) {
@@ -54,6 +56,31 @@ const NFTManagement = () => {
 
   const { data } = useGraphQlQuery(queryObj);
 
+  const fetchPrivateMetadata = React.useCallback(async () => {
+    try {
+      const data = await callViewMethod({
+        contractId: constants.tokenContractAddress,
+        method: "get_metadata_for_tokens",
+        args: {
+          token_ids: [
+            "kvcERXKT601fNOh2AWywP",
+            "Xc_-jSAHcE6TJHYcwGyeh",
+            "mSkM5GR0js7UWtQ-R5im_",
+            "HSiQ56ynXzbioO8TRo2z4",
+          ],
+        },
+      });
+
+      console.log(data);
+    } catch (err) {
+    } finally {
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchPrivateMetadata();
+  }, []);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -73,9 +100,7 @@ const NFTManagement = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="truncate">{id}</CardTitle>
-                <CardDescription>
-                  ...
-                </CardDescription>
+                <CardDescription>...</CardDescription>
               </CardHeader>
               <CardContent>...</CardContent>
               <CardFooter className="flex justify-between">

@@ -16,7 +16,7 @@ if [ -f "$CONTRACT_NAME_FILE" ]; then
             "public_key": "ed25519:8LXEySyBYewiTTL2jfGTSYcZsDjpRJ4hRm1fS3WJ4MdH",
             "metadata": {
                 "uri": "asdasd",
-                "hash256": "test"
+                "sha256": "test"
             }
         }
     }' --accountId yoooooooooooooooooooo.testnet
