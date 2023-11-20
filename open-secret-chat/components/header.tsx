@@ -13,7 +13,7 @@ export async function Header() {
                 </Link>
             </div>
 
-            <Link href="/dashboard">
+            <Link href="https://dashboard.opensecret.xyz">
                 <Button
                     className="mr-4 hidden md:flex"
                 >
