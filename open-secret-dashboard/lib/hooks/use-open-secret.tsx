@@ -308,12 +308,17 @@ const useOpenSecret = ({ contractId }: { contractId: string }) => {
     };
   };
 
-  const giveAccess = async (uri: string, publicKey: string, nonce: string) => {
+  const giveAccess = async (
+    uri: string,
+    publicKey: string,
+    nonce: string,
+    tokenId: string
+  ) => {
     const decryptedData = await decryptDataByUri(uri, nonce);
-
     await addMetadata({
       data: decryptedData!,
       otherPublicKey: publicKey,
+      tokenId,
     });
   };
 

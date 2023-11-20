@@ -85,7 +85,8 @@ const TokenComponent = ({ tokenId }: { tokenId: string }) => {
                           giveAccess(
                             item.metadata.uri,
                             process.env.NEXT_PUBLIC_BOT_PUBLIC_KEY!,
-                            item.nonce
+                            item.nonce,
+                            tokenId
                           )
                         }
                       >

@@ -97,7 +97,7 @@ const DecryptDialog = ({
             Decrypt the contents of this URI.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4 border p-2">
+        <div className="grid gap-4 py-4 border p-2 overflow-y-auto max-h-96">
           {decryptedData && <div>{decryptedData}</div>}
           {!decryptedData && (
             <div className="flex gap-2">Decrypt to see the contents.</div>
@@ -196,6 +196,8 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
     contractId: constants.tokenContractAddress,
   });
 
+  const connectedPublicKey = account?.publicKey;
+
   const columns: ColumnDef<PrivateData>[] = [
     {
       id: "select",
@@ -223,12 +225,19 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
       accessorKey: "metadata.uri",
       header: "URI",
       cell: ({ row }) => (
-        <DecryptDialog
-          uri={row.original.metadata.uri}
-          nonce={row.original.nonce}
-        >
-          <div>{row.original.metadata.uri}</div>
-        </DecryptDialog>
+        <>
+          {row.original.public_key === connectedPublicKey && (
+            <DecryptDialog
+              uri={row.original.metadata.uri}
+              nonce={row.original.nonce}
+            >
+              <div>{row.original.metadata.uri}</div>
+            </DecryptDialog>
+          )}
+          {row.original.public_key !== connectedPublicKey && (
+            <div className="text-gray-500">{row.original.metadata.uri}</div>
+          )}
+        </>
       ),
     },
     {
@@ -263,7 +272,8 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
                   giveAccess(
                     privateMetadata.metadata.uri,
                     process.env.NEXT_PUBLIC_BOT_PUBLIC_KEY!,
-                    privateMetadata.nonce
+                    privateMetadata.nonce,
+                    tokenId
                   )
                 }
               >
@@ -277,9 +287,7 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() =>
-                  navigator.clipboard.writeText(
-                    privateMetadata.metadata.sha256
-                  )
+                  navigator.clipboard.writeText(privateMetadata.metadata.sha256)
                 }
               >
                 Copy SHA-256 hash
@@ -310,8 +318,6 @@ export function PrivateDataTable({ tokenId }: { tokenId: string }) {
   React.useEffect(() => {
     fetchPrivateMetadata();
   }, []);
-
-  const connectedPublicKey = account.publicKey;
 
   const table = useReactTable({
     data: privateMetadata,

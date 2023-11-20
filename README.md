@@ -39,7 +39,7 @@ The following process allows for the secure minting and transferring of private 
 - [] Indexer (subgraph?)
 - [] Dashboard 
 - [] Marketplace
+- [] Cont
 - Use-cases
    - [] Chat
 
-   
